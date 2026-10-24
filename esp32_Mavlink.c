@@ -28,7 +28,8 @@
 #define NVS_NAMESPACE   "fc_params"
 
 static const char *TAG = "FC";
-
+// Current flight-controller system state
+static uint8_t fc_system_state = MAV_STATE_BOOT;
 
 // ============================================================
 // PARAMETER STRUCTURE
@@ -371,8 +372,7 @@ static void send_heartbeat(void)
         MAV_MODE_FLAG_CUSTOM_MODE_ENABLED,
 
         0,
-
-        MAV_STATE_ACTIVE
+        fc_system_state
     );
 
 
@@ -774,26 +774,18 @@ void app_main(void)
 
     init_uart();
 
-
-    /*
-     * Give UART a little time to initialize.
-     */
-
     vTaskDelay(pdMS_TO_TICKS(500));
 
-
-    // ========================================================
-    // SEND INITIAL HEARTBEAT
-    // ========================================================
-
-    send_heartbeat();
-
+    // Basic software initialization completed.
+    // Sensors and flight-control logic are not implemented yet.
+    fc_system_state = MAV_STATE_STANDBY;
 
     ESP_LOGI(
         TAG,
-        "Initial heartbeat sent"
+        "Basic initialization complete; state = STANDBY"
     );
 
+    send_heartbeat();
 
     // ========================================================
     // HEARTBEAT TIMER
